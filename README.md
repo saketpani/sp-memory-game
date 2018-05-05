@@ -1,4 +1,5 @@
 # Memory Game Project
+This is a memory game where application where the user can complete the complete the macthing of pair of cards with least number of clicks and timespan. The user's score is shown when the game is completed.
 
 ## Table of Contents
 
@@ -7,11 +8,21 @@
 
 ## Instructions
 
-The starter project has some HTML and CSS styling to display a static version of the Memory Game project. You'll need to convert this project from a static project to an interactive one. This will require modifying the HTML and CSS files, but primarily the JavaScript file.
+Please follow the steps below to run the project and play this fun game.
 
-To get started, open `js/app.js` and start building out the app's functionality
+### How to install the game locally
 
-For specific, detailed instructions, look at the project instructions in the [Udacity Classroom](https://classroom.udacity.com/me).
+Clone or download from the following github path.
+https://github.com/saketpani/sp-memory-game
+
+If you have downloaded a zip file, then extract it and open the root folder in your favourite IDE.(VSCode, SublimeText etc.). Ensure that you have internet connection to download jquery from CDN.
+
+### How to play the game
+Open index.html in your favourite browser(IE, Chrome, firefox, Edge etc.). The cards are randomly distributed in the deck. Click on a card that show up the image. You need to find out it's card pair whihc has identical image as the selected card. If match is found then the card remains open, else both the cards flipped back to closed state. In such a case remember the cards you clicked so that in future clicks you can find it's pair easily and you can complete the game in short span of time and moved and get good star rating. 
+
+Keep practicing to achieve a good level of mastery over the game. As you know practice makes a person *near perfect* and reach to their fuller potential.
+
+Strive for excellence. All the best...
 
 ## Contributing
 

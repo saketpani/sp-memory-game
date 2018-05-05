@@ -139,3 +139,8 @@ h1 {
     border-radius: 4px;
     background-color:#02b3e4;    
 }
+
+.timeElapsed {
+    display: inline-block;
+    padding-right: 30px;
+}

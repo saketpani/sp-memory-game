@@ -1,5 +1,4 @@
-$(function () {
-
+$(function () {   
     /**
      * application global constants
      */
@@ -14,24 +13,24 @@ $(function () {
             "fa-bicycle", "fa-bolt", "fa-cube", "fa-leaf"
         ],
         totalCount: 16,
-        numberOfMOvesToChangeRating: 15,
+        numberOfMovesToChangeRating: 15,
         initialStarRating: 3,
         timerIntervalInms: 1000,
+        completionMsgShowDelayInMs: 1500
     };
-
-    /*
-     * Create a list that holds all of your cards
-     */
-    let timeElapsed = 0,
-        moveCounter = 0,
-        openCards = [];
-    let timer;
-    let starRating = appConstants.initialStarRating;
+    const timerText = $("#timer");
     const starHtml = `
     <li>
         <i class="fa fa-star"></i>
     </li>`;
+  
+    let timeElapsed = 0,
+        moveCounter = 0,
+        newOpenCard = false,
+        openCards = [];
 
+    let timer, starRating = appConstants.initialStarRating;    
+    
     /*
      * Display the cards on the page
      *   - shuffle the list of cards using the provided "shuffle" method below
@@ -65,6 +64,26 @@ $(function () {
         <i class="fa ${cardClass}"></i>
     </li>`;
         $(".deck").append(cardHtml);
+    }
+
+    /**
+     * checks if the existing clicked pair is already open and not matched.
+     */
+    function isExistingCardPairOpen() {
+        let count = 0;
+        let cardItems = $(".card");
+        
+        for (const item of cardItems) {
+            const card = $(item);
+            if (isOpen(card) && !isMatched(card)) {
+                count++;
+                if (count >= 2) {
+                    break;
+                }
+            }
+        }
+
+        return count >= 2;
     }
 
     /**
@@ -147,11 +166,15 @@ $(function () {
             clearInterval(timer);
         }
 
-        setInterval(function () {
+        timer = setInterval(function () {
             timeElapsed++;
-        }, appConstants.timerIntervalInms);
+            updateTimer(timeElapsed);
+        }, appConstants.timerIntervalInms);        
     }
 
+    function updateTimer(timeElapsedInSec) {
+        timerText.text(timeElapsedInSec);
+    }
     /**
      * This method returns the time elapsed in seconds.
      */
@@ -182,8 +205,10 @@ $(function () {
      * sets the click event to each card
      */
     function initialize() {
+
         resetCounter();
         clearOpenCards();
+
         $(".deck").children().remove();
 
         const shuffledCards = shuffle(appConstants.cards);
@@ -227,9 +252,11 @@ $(function () {
      */
     function cardClickHandler(card) {
 
-        if (isOpen(card) || isMatched(card)) {
+        if (isOpen(card) || isMatched(card) || isExistingCardPairOpen()) {
             return;
         }
+
+        newOpenCard = !newOpenCard;
 
         incrementCounter();
         showSymbol(card);
@@ -270,13 +297,12 @@ $(function () {
                 setTimeout(function () {
 
                     if (isGameFinished()) {
-                        clearInterval(timer);
                         showCompletionMessage(getTimeELapsedInSeconds(), moveCounter, starRating);
                     }
-                }, 1500);
+                }, appConstants.completionMsgShowDelayInMs);
 
             }
-        }, 1000);
+        }, appConstants.timerIntervalInms);
     }
 
     /**
@@ -287,6 +313,7 @@ $(function () {
      */
     function showCompletionMessage(timeElapsed, moves, starRating) {
 
+        clearInterval(timer);
         $("#msg").html(`Congratulations!! You took ${timeElapsed}
                         seconds and ${moves} moves to complete this game. 
                         Your star rating is ${starRating} star.`);
@@ -309,7 +336,7 @@ $(function () {
      */
     function addEvents() {
         let cardItems = $(".card");
-        
+
         for (const item of cardItems) {
             const card = $(item);
             card.on("click", function () {
@@ -360,21 +387,23 @@ $(function () {
      * Increment the counter and updates the moves     
      */
     function incrementCounter() {
-        moveCounter++;
-        $(".moves").text(moveCounter);
-        updateStarRating();
+        if (!newOpenCard) {
+            moveCounter++;
+            $(".moves").text(moveCounter);
+            updateStarRating();
+        }
     }
 
     /**
      * update the star rating
      */
     function updateStarRating() {
-        if (moveCounter === appConstants.numberOfMOvesToChangeRating) {
+        if (moveCounter === appConstants.numberOfMovesToChangeRating) {
             $(".stars").empty();
             $(".stars").append(starHtml);
             $(".stars").append(starHtml);
             starRating--;
-        } else if (moveCounter === (appConstants.numberOfMOvesToChangeRating * 2)) {
+        } else if (moveCounter === (appConstants.numberOfMovesToChangeRating * 2)) {
             $(".stars").empty();
             $(".stars").append(starHtml);
             starRating--;
